@@ -53,9 +53,9 @@ public class Tabu extends Algorithme {
 //                this.fenetre.afficherMap(bestSolution);
             }
             tabuclients.add(bestCandidat);
-            long locElapsedTime = System.nanoTime() - startTime;
-            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
-            System.out.println("Exec time: " + locDurationInMs + "ms");
+//            long locElapsedTime = System.nanoTime() - startTime;
+//            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
+//            System.out.println("Exec time: " + locDurationInMs + "ms");
         }
 //        this.fenetre.afficherMap(bestSolution);
         long elapsedTime = System.nanoTime() - startTime;

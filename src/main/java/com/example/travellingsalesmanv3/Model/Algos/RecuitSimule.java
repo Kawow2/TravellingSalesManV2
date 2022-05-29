@@ -1,6 +1,5 @@
 package com.example.travellingsalesmanv3.Model.Algos;
 
-import com.example.travellingsalesmanv3.Model.Fenetre.Fenetre;
 import com.example.travellingsalesmanv3.Model.Structure.Map;
 import com.example.travellingsalesmanv3.Model.Tools.Tools;
 import com.example.travellingsalesmanv3.Model.TransfoElementaire.VoisinAlgo;
@@ -21,15 +20,18 @@ public class RecuitSimule extends Algorithme {
 
     @Override
     public Map lancer(Map map) {
+
         map = this.recuitSimule(map);
         return map;
     }
 
 
     private Map recuitSimule(Map map) {
+
         long startTime = System.nanoTime();
         Random rnd = new Random();
         Map cloneMap = map.cloneMap();
+
         Map bestSolution = cloneMap.cloneMap();
         double minFitness = Integer.MAX_VALUE;
         double fitnessBestSolution = Tools.calculerDistanceTotal(cloneMap);
@@ -46,9 +48,6 @@ public class RecuitSimule extends Algorithme {
 
                 var diffFitness = fitnessVoisin - fitnessBestSolution;
 
-//                if (l == 1) {
-//                    temperature = -diffFitness / Math.log(0.8);
-//                }
 
                 //si voisin est meilleur
                 if (diffFitness <= 0) {
@@ -63,15 +62,19 @@ public class RecuitSimule extends Algorithme {
                     if (proba <= Math.exp(-diffFitness / temperature)) {
                         nextVoisin = randomVoisin;
                     }
+                    else
+                    {
+                        nextVoisin = cloneMap;
+                    }
+
                 }
                 cloneMap = nextVoisin;
-                if (l % 50 == 0)
-                    System.out.println(fitnessBestSolution);
+
             }
             temperature = mu * temperature;
-            long locElapsedTime = System.nanoTime() - startTime;
-            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
-            System.out.println("Exec time: " + locDurationInMs + "ms");
+//            long locElapsedTime = System.nanoTime() - startTime;
+//            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
+//            System.out.println("Exec time: " + locDurationInMs + "ms");
         }
         long elapsedTime = System.nanoTime() - startTime;
         long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
