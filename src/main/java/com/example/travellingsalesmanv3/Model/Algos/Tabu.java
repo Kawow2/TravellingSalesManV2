@@ -6,6 +6,7 @@ import com.example.travellingsalesmanv3.Model.Tools.Tools;
 import com.example.travellingsalesmanv3.Model.TransfoElementaire.VoisinAlgo;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class Tabu extends Algorithme {
@@ -24,7 +25,7 @@ public class Tabu extends Algorithme {
 
     //todo opti ?
     private Map rechercheTabu(Map map) {
-        System.out.println("debut tabou");
+        long startTime = System.nanoTime();
         TABUCONDITION = true;
         Map bestSolution = map.cloneMap();
         Map bestCandidat;
@@ -52,10 +53,14 @@ public class Tabu extends Algorithme {
 //                this.fenetre.afficherMap(bestSolution);
             }
             tabuclients.add(bestCandidat);
+            long locElapsedTime = System.nanoTime() - startTime;
+            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
+            System.out.println("Exec time: " + locDurationInMs + "ms");
         }
 //        this.fenetre.afficherMap(bestSolution);
-        System.out.println("fin tabou");
-
+        long elapsedTime = System.nanoTime() - startTime;
+        long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+        System.out.println("Total exec. time: " + durationInMs + "ms");
         return bestSolution;
     }
 }

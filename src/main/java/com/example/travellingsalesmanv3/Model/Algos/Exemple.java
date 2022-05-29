@@ -32,6 +32,7 @@ public class Exemple extends Algorithme {
     private Map Exemple3(Map map) throws Exception {
         Relocate relocate = new Relocate();
         relocate.relocateAll(map);
+
         return map;
     }
 

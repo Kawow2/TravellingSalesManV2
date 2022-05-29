@@ -131,12 +131,7 @@ public class WindowController {
             e.printStackTrace();
         }
         currentMap = algorithme.lancer(currentMap);
-
-
         drawCurrentMapInCanva();
-
-
-
     }
 
     private void drawCurrentMapInCanva()
