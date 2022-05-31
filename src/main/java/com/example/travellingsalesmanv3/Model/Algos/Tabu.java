@@ -5,7 +5,10 @@ import com.example.travellingsalesmanv3.Model.Structure.Map;
 import com.example.travellingsalesmanv3.Model.Tools.Tools;
 import com.example.travellingsalesmanv3.Model.TransfoElementaire.VoisinAlgo;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -27,15 +30,16 @@ public class Tabu extends Algorithme {
     private Map rechercheTabu(Map map) {
         long startTime = System.nanoTime();
         TABUCONDITION = true;
+
         Map bestSolution = map.cloneMap();
         Map bestCandidat;
         ArrayList<Map> tabuclients = new ArrayList<>();
         tabuclients.add(map);
+
         while (TABUCONDITION) {
             ArrayList<Map> voisin = new ArrayList<>();
-            for (VoisinAlgo voisinAlgo : this.voisins) {
+            for (VoisinAlgo voisinAlgo : this.voisins)
                 voisin.addAll(voisinAlgo.lancerToutVoisin(bestSolution));
-            }
 
             bestCandidat = voisin.stream().filter(v -> !tabuclients.contains(v)).collect(Collectors.toList()).stream().findAny().orElse(null);
 
@@ -43,15 +47,14 @@ public class Tabu extends Algorithme {
                 TABUCONDITION = false;
                 bestCandidat = bestSolution;
             }
-            for (Map sCand : voisin) {
-                if (!tabuclients.contains(sCand) && Tools.calculerDistanceTotal(sCand) < Tools.calculerDistanceTotal(bestCandidat)) {
+            for (Map sCand : voisin)
+                if (!tabuclients.contains(sCand) && Tools.calculerDistanceTotal(sCand) < Tools.calculerDistanceTotal(bestCandidat))
                     bestCandidat = sCand;
-                }
-            }
-            if (Tools.calculerDistanceTotal(bestCandidat) < Tools.calculerDistanceTotal(bestSolution)) {
+
+            if (Tools.calculerDistanceTotal(bestCandidat) < Tools.calculerDistanceTotal(bestSolution))
                 bestSolution = bestCandidat;
-//                this.fenetre.afficherMap(bestSolution);
-            }
+//              this.fenetre.afficherMap(bestSolution);
+
             tabuclients.add(bestCandidat);
 //            long locElapsedTime = System.nanoTime() - startTime;
 //            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
@@ -61,6 +64,16 @@ public class Tabu extends Algorithme {
         long elapsedTime = System.nanoTime() - startTime;
         long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
         System.out.println("Total exec. time: " + durationInMs + "ms");
+
+        try {
+            FileWriter myWriter = new FileWriter("src/main/java/com/example/travellingsalesmanv3/Model/Results/TABU_" + UUID.randomUUID() + ".txt");
+            for (Map curMap : tabuclients) {
+                myWriter.write(Double.toString(Tools.calculerDistanceTotal(curMap)) + "\n");
+            }
+            myWriter.write(Long.toString(durationInMs) + "\n");
+            myWriter.close();
+        }catch (IOException e){}
+
         return bestSolution;
     }
 }
