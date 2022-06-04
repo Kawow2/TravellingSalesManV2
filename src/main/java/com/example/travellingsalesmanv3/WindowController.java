@@ -51,6 +51,13 @@ public class WindowController {
     List<Color> allColors;
 
     @FXML
+    private Label nbClientLabel;
+
+    @FXML
+    private Label nbVehicleLabel;
+
+
+    @FXML
     private ComboBox<ListAlgo> listAlgoComboBox;
 
     @FXML
@@ -131,6 +138,8 @@ public class WindowController {
             e.printStackTrace();
         }
         currentMap = algorithme.lancer(currentMap);
+        this.nbVehicleLabel.setText(String.valueOf(currentMap.getVehicles().size()));
+        this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size()-2));
         drawCurrentMapInCanva();
     }
 
