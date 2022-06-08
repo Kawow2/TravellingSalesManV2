@@ -223,7 +223,7 @@ public class WindowController {
         try {
             return Tools.generateurSolutionAleatoire(Tools.ReadOneFile(currentFile), rnd);
         } catch (FileNotFoundException e) {
-            return  null;
+            return null;
         }
     }
 

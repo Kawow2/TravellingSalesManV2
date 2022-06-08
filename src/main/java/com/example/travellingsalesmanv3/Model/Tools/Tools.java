@@ -7,6 +7,7 @@ import com.example.travellingsalesmanv3.Model.Structure.Vehicle;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
@@ -16,9 +17,10 @@ public class Tools {
     public final static String PATH = "\\src\\main\\java\\com\\example\\travellingsalesmanv3\\Model\\files\\";
 
     public static ArrayList<Client> ReadOneFile(String fileName) throws FileNotFoundException {
+        String SEP = FileSystems.getDefault().getSeparator();
         ArrayList<Client> clients = new ArrayList<>();
         String path = System.getProperty("user.dir");
-        var str = path + PATH;
+        var str = path + PATH.replace('\\',SEP.charAt(0));
         File doc = new File(str + fileName );
         Scanner obj = new Scanner(doc);
         obj.nextLine();
@@ -66,7 +68,8 @@ public class Tools {
 
     public static ArrayList<String> getAllFilesName() {
         String path = System.getProperty("user.dir");
-        var str = path + "\\src\\main\\java\\com\\example\\travellingsalesmanv3\\Model\\files";
+        String sep = FileSystems.getDefault().getSeparator();
+        var str = path + "\\src\\main\\java\\com\\example\\travellingsalesmanv3\\Model\\files".replace('\\',sep.charAt(0));
         File folder = new File(str);
         ArrayList<String> filesnames = new ArrayList<>();
         File[] listOfFiles = folder.listFiles();
