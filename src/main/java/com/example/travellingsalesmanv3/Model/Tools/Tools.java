@@ -20,8 +20,8 @@ public class Tools {
         String SEP = FileSystems.getDefault().getSeparator();
         ArrayList<Client> clients = new ArrayList<>();
         String path = System.getProperty("user.dir");
-        var str = path + PATH.replace('\\',SEP.charAt(0));
-        File doc = new File(str + fileName );
+        var str = path + PATH.replace('\\', SEP.charAt(0));
+        File doc = new File(str + fileName);
         Scanner obj = new Scanner(doc);
         obj.nextLine();
         while (obj.hasNextLine()) {
@@ -47,8 +47,7 @@ public class Tools {
     }
 
     public static double calculerDistanceTotal(Map map) {
-        if (map == null)
-        {
+        if (map == null) {
             var a = 1;
 
         }
@@ -69,7 +68,7 @@ public class Tools {
     public static ArrayList<String> getAllFilesName() {
         String path = System.getProperty("user.dir");
         String sep = FileSystems.getDefault().getSeparator();
-        var str = path + "\\src\\main\\java\\com\\example\\travellingsalesmanv3\\Model\\files".replace('\\',sep.charAt(0));
+        var str = path + "\\src\\main\\java\\com\\example\\travellingsalesmanv3\\Model\\files".replace('\\', sep.charAt(0));
         File folder = new File(str);
         ArrayList<String> filesnames = new ArrayList<>();
         File[] listOfFiles = folder.listFiles();
@@ -91,6 +90,7 @@ public class Tools {
         v.addClients(clients.remove(0));
         while (clients.size() != 0) {
             int c = rnd.nextInt(clients.size());
+            //int c = 0;
             Client client = clients.remove(c);
             if (v.getCapaciteRestant() < client.getValue()) {
                 v.setCapaciteRestant(v.getCapaciteRestant() - listClients.get(0).getValue());
@@ -104,6 +104,7 @@ public class Tools {
             v.addClients(client);
         }
         v.addClients(listClients.get(0));
+
         return new Map(listClients, vehicles);
     }
 }
