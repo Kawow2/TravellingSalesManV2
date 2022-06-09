@@ -27,12 +27,11 @@ import java.util.Random;
 
 
 public class WindowController {
-    private static final int zoom  = 5;
+    private static final int zoom = 5;
+    List<Color> allColors;
     private String currentFile;
     private ListAlgo currentAlgo;
     private ArrayList<Boolean> voisinsAlgo = new ArrayList<>();
-
-
     @FXML
     private Button runButton;
     @FXML
@@ -45,11 +44,7 @@ public class WindowController {
     private Canvas canva;
     @FXML
     private Label fitnessLabel;
-
     private Map currentMap;
-
-    List<Color> allColors;
-
     @FXML
     private Label nbClientLabel;
 
@@ -64,8 +59,7 @@ public class WindowController {
     private ComboBox<String> listFilesComboBox;
 
     @FXML
-    public void initialize()
-    {
+    public void initialize() {
         initComboBox();
         initVariables();
         currentMap = UpdateMap();
@@ -75,23 +69,24 @@ public class WindowController {
 
     /**
      * OPT correspond à index 0, relocate à 1 et exchange à 2
+     *
      * @param event
      */
     @FXML
     void selectOPT(ActionEvent event) {
-        this.voisinsAlgo.set(0,!this.voisinsAlgo.get(0));
+        this.voisinsAlgo.set(0, !this.voisinsAlgo.get(0));
 
     }
 
     @FXML
     void selectRelocate(ActionEvent event) {
-        this.voisinsAlgo.set(1,!this.voisinsAlgo.get(1));
+        this.voisinsAlgo.set(1, !this.voisinsAlgo.get(1));
 
     }
 
     @FXML
     void selectExchange(ActionEvent event) {
-        this.voisinsAlgo.set(2,!this.voisinsAlgo.get(2));
+        this.voisinsAlgo.set(2, !this.voisinsAlgo.get(2));
     }
 
     private void initVariables() {
@@ -104,8 +99,7 @@ public class WindowController {
     }
 
 
-    private ArrayList<VoisinAlgo> initListVoisins()
-    {
+    private ArrayList<VoisinAlgo> initListVoisins() {
         var listVoisins = new ArrayList<VoisinAlgo>();
         if (this.voisinsAlgo.get(0))
             listVoisins.add(new OPT());
@@ -113,7 +107,7 @@ public class WindowController {
             listVoisins.add(new Relocate());
         if (this.voisinsAlgo.get(2))
             listVoisins.add(new Exchange());
-        return  listVoisins;
+        return listVoisins;
     }
 
     @FXML
@@ -133,34 +127,31 @@ public class WindowController {
         var listVoisins = initListVoisins();
         Algorithme algorithme = null;
         try {
-            algorithme = ListAlgo.getAlgorithme(this.currentAlgo,listVoisins);
+            algorithme = ListAlgo.getAlgorithme(this.currentAlgo, listVoisins);
         } catch (Exception e) {
             e.printStackTrace();
         }
         currentMap = algorithme.lancer(currentMap);
         this.nbVehicleLabel.setText(String.valueOf(currentMap.getVehicles().size()));
-        this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size()-2));
+        this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size() - 1));
         drawCurrentMapInCanva();
     }
 
-    private void drawCurrentMapInCanva()
-    {
+    private void drawCurrentMapInCanva() {
         GraphicsContext gc = canva.getGraphicsContext2D();
         this.fitnessLabel.setText(String.valueOf(Tools.calculerDistanceTotal(currentMap)));
         var j = 0;
-        for (Vehicle v : currentMap.getVehicles())
-        {
+        for (Vehicle v : currentMap.getVehicles()) {
             var color = allColors.get(j);
             var clients = v.getClientsToDeliver();
             var c1 = clients.get(0);
 
             gc.beginPath();
-            gc.moveTo(c1.getPoint().x*zoom,c1.getPoint().y*zoom);
+            gc.moveTo(c1.getPoint().x * zoom, c1.getPoint().y * zoom);
 
-            for (int i=1; i< clients.size();i++)
-            {
+            for (int i = 1; i < clients.size(); i++) {
                 var current = clients.get(i);
-                gc.lineTo(current.getPoint().x*zoom,current.getPoint().y*zoom);
+                gc.lineTo(current.getPoint().x * zoom, current.getPoint().y * zoom);
             }
             gc.closePath();
             gc.setStroke(color);
@@ -168,17 +159,15 @@ public class WindowController {
             j++;
         }
 
-        for (Client c : currentMap.getClients())
-        {
+        for (Client c : currentMap.getClients()) {
             if (currentMap.getClients().indexOf(c) == 0)
-                gc.fillOval((c.getPoint().x*zoom)-6,(c.getPoint().y*zoom)-6,20,20);
+                gc.fillOval((c.getPoint().x * zoom) - 6, (c.getPoint().y * zoom) - 6, 20, 20);
             else
-                gc.fillOval((c.getPoint().x*zoom)-3,(c.getPoint().y*zoom)-3,10,10);
+                gc.fillOval((c.getPoint().x * zoom) - 3, (c.getPoint().y * zoom) - 3, 10, 10);
         }
     }
 
-    private void clearDraw()
-    {
+    private void clearDraw() {
         GraphicsContext gc = canva.getGraphicsContext2D();
         gc.clearRect(0, 0, canva.getWidth(), canva.getHeight());
     }
@@ -190,9 +179,10 @@ public class WindowController {
 
     /**
      * Génèré des couelurs utilisés pour le graphe
+     *
      * @return
      */
-    private List<Color> getAllColors()  {
+    private List<Color> getAllColors() {
         List<Color> colors = new ArrayList<>();
         colors.add(Color.BLUE);
         colors.add(Color.RED);
@@ -215,10 +205,10 @@ public class WindowController {
 
     /**
      * remplace la current Map
+     *
      * @return
      */
-    private Map UpdateMap()
-    {
+    private Map UpdateMap() {
         Random rnd = new Random();
         try {
             return Tools.generateurSolutionAleatoire(Tools.ReadOneFile(currentFile), rnd);
@@ -227,8 +217,7 @@ public class WindowController {
         }
     }
 
-    private void initComboBox()
-    {
+    private void initComboBox() {
         listFilesComboBox.getItems().removeAll(listFilesComboBox.getItems());
         listFilesComboBox.getItems().addAll(Tools.getAllFilesName());
         listAlgoComboBox.getItems().removeAll(listAlgoComboBox.getItems());
