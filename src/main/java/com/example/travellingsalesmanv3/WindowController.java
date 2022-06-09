@@ -133,7 +133,7 @@ public class WindowController {
         }
         currentMap = algorithme.lancer(currentMap);
         this.nbVehicleLabel.setText(String.valueOf(currentMap.getVehicles().size()));
-        this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size() - 2));
+        this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size() - 1));
         drawCurrentMapInCanva();
     }
 
