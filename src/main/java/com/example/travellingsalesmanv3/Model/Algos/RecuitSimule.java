@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 public class RecuitSimule extends Algorithme {
     private static int N1 = 100;
-    private static int N2 = 100;
-    private static double temperature = 1;
+    private static int N2 = 10000;
+    private static double temperature = 300;
     private static double mu = 0.9;
 
     public RecuitSimule(ArrayList<VoisinAlgo> listVoisins) {
@@ -27,9 +27,12 @@ public class RecuitSimule extends Algorithme {
         return map;
     }
 
-
     private Map recuitSimule(Map map) {
+        int nbTemp = (int)(Math.log(Math.log(0.8) / Math.log(0.01))/Math.log(mu) )* 3;
+        double temperature = 0;
+
         long startTime = System.nanoTime();
+
         Random rnd = new Random();
         Map cloneMap = map.cloneMap();
 
@@ -40,40 +43,35 @@ public class RecuitSimule extends Algorithme {
 
         try {
             FileWriter myWriter = new FileWriter("src/main/java/com/example/travellingsalesmanv3/Model/Results/RECUIT_" + UUID.randomUUID() + ".txt");
-            for (int k = 0; k < N1; k++) {
+            for (int k = 0; k < nbTemp; k++) {
                 for (int l = 1; l < N2; l++) {
+                    cloneMap = map.cloneMap();
                     ArrayList<Map> voisin = new ArrayList<>();
                     for (VoisinAlgo voisinAlgo : this.voisins)
-                        voisin.addAll(voisinAlgo.lancerToutVoisin(cloneMap));
+                        voisin.addAll(voisinAlgo.lancerToutVoisin(map));
 
                     //choix du voisin random
                     Map randomVoisin = voisin.get(rnd.nextInt(voisin.size() - 1));
                     double fitnessVoisin = Tools.calculerDistanceTotal(randomVoisin);
 
                     var diffFitness = fitnessVoisin - fitnessBestSolution;
+                    // Check pk fichier A6009 diffFitness = fitnessVoisin - fitnessBestSolution = 0
+                    if (k == 1 && l == 1) {
+                        temperature = -(Math.abs(diffFitness)) / Math.log(0.8);
+                        System.out.println(temperature);
+                    }
 
                     //si voisin est meilleur
-                    if (diffFitness <= 0) {
+                    double proba = rnd.nextDouble();
+                    if (diffFitness <= 0 || proba <= Math.exp(-diffFitness / temperature)) {
                         nextVoisin = randomVoisin;
-                        if (fitnessVoisin < minFitness) {
-                            fitnessBestSolution = fitnessVoisin;
-                            bestSolution = randomVoisin;
-                        }
-                    } else {
-                        double proba = rnd.nextDouble();
-                        var a = Math.exp(-diffFitness / temperature);
-                        if (proba <= Math.exp(-diffFitness / temperature)) {
-                            nextVoisin = randomVoisin;
-                        } else { nextVoisin = cloneMap; }
-                    }
-                    cloneMap = nextVoisin;
-                    myWriter.write(Double.toString(Tools.calculerDistanceTotal(cloneMap)) + "\n");
-
+                        fitnessBestSolution = fitnessVoisin;
+                    } else { nextVoisin = cloneMap; }
+                    map = nextVoisin;
+                    myWriter.write(Double.toString(Tools.calculerDistanceTotal(map)) + "\n");
                 }
                 temperature = mu * temperature;
-    //            long locElapsedTime = System.nanoTime() - startTime;
-    //            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
-    //            System.out.println("Exec time: " + locDurationInMs + "ms");
+                System.out.println(k);
             }
             long elapsedTime = System.nanoTime() - startTime;
             long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
@@ -82,6 +80,6 @@ public class RecuitSimule extends Algorithme {
             myWriter.write(Long.toString(durationInMs) + "\n");
             myWriter.close();
         }catch (IOException e){}
-        return bestSolution;
+        return map;
     }
 }
