@@ -34,8 +34,8 @@ public class Exchange extends VoisinAlgo {
         LinkedList<Client> clients = map.getVehicles().get(nbVA).getClientsToDeliver();
         LinkedList<Client> clients2 = map.getVehicles().get(nbVB).getClientsToDeliver();
 
-        if (capA < clients2.get(posB).getValue() || capB < clients.get(posA).getValue())
-            return map;
+        if (capA < clients2.get(posB).getValue()-capB && capB < clients.get(posA).getValue()-capA)
+            return null;
 
         Client cliA = clients.get(posA);
         clients.set(posA, clients2.get(posB));
@@ -52,7 +52,6 @@ public class Exchange extends VoisinAlgo {
                     Map mapClone = map.cloneMap();
                     Map m = ExchangeVoisinIntra(mapClone, i, j, k);
                     maps.add(m);
-
                 }
             }
         }
@@ -71,7 +70,9 @@ public class Exchange extends VoisinAlgo {
                     Vehicle v2 = map.getVehicles().get(k2);
                     for (int j = 1; j < v2.getClientsToDeliver().size() - 1; j++) {
                         Map mapClone = map.cloneMap();
-                        maps.add(this.ExchangeVoisinInter(mapClone, i, j, k, k2));
+                        Map m = this.ExchangeVoisinInter(mapClone, i, j, k, k2);
+                        if (m != null)
+                            maps.add(m);
                     }
                 }
             }
