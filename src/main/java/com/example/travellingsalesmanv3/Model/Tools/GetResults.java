@@ -37,8 +37,8 @@ public class GetResults {
             Map currentMap = generateurSolutionAleatoire(Tools.ReadOneFile(file), rnd);
             Map tabuMap = currentMap.cloneMap();
             Map recuitMap = currentMap.cloneMap();
-            tabu.lancer(tabuMap);
-            rec.lancer(recuitMap);
+            tabu.lancer(tabuMap,file);
+            rec.lancer(recuitMap,file);
         }
 
 //        Random rnd = new Random();

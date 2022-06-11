@@ -17,7 +17,7 @@ public class Exemple extends Algorithme {
     }
 
     @Override
-    public Map lancer(Map map) {
+    public Map lancer(Map map,String fileName) {
         try {
             map = Exemple3(map);
         } catch (FileNotFoundException e) {
@@ -34,6 +34,12 @@ public class Exemple extends Algorithme {
         relocate.relocateAll(map);
 
         return map;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ALEA";
     }
 
 
