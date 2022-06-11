@@ -150,6 +150,7 @@ public class WindowController {
         long elapsedTime = System.nanoTime() - startTime;
         long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
         System.out.println("Total exec. time: " + durationInMs + "ms");
+        //TODO save le temps d'exec dans le fichier txt
 
         this.nbVehicleLabel.setText(String.valueOf(currentMap.getVehicles().size()));
         this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size() - 1));
