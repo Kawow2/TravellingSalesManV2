@@ -3,14 +3,13 @@ package com.example.travellingsalesmanv3.Model.TransfoElementaire;
 import com.example.travellingsalesmanv3.Model.Structure.Client;
 import com.example.travellingsalesmanv3.Model.Structure.Map;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class OPT extends VoisinAlgo {
     @Override
-    public Map lancer(Map map, int posA, int posB, int nbV) {
+    public Map lancer(Map map, int posA, int posB, int nbV, int nbv2) {
+        Random rnd = new Random();
+        posB = rnd.nextInt(1, map.getVehicles().get(nbV).getClientsToDeliver().size() - 1);
         return OPTOnce(map, posA, posB, nbV);
     }
 
@@ -20,13 +19,20 @@ public class OPT extends VoisinAlgo {
     }
 
     public Map OPTOnce(Map map, int posA, int posB, int nbV) {
+        if (posA > posB) {
+            int res = posA;
+            posA = posB;
+            posB = res;
+        }
         LinkedList<Client> clients = map.getVehicles().get(nbV).getClientsToDeliver();
-        List<Client> clientCopy = new ArrayList<>(clients.subList(posA + 1, posB + 1));
-        Collections.reverse(clientCopy);
-        List<Client> finalList = new ArrayList<>(clients.subList(0, posA + 1));
-        finalList.addAll(clientCopy);
-        finalList.addAll(clients.subList(posB + 1, clients.size()));
-        map.getVehicles().get(nbV).setClientsToDeliver(new LinkedList<Client>(finalList));
+        if (AreTwoEdgeDisjoint(clients.get(posA), clients.get(posA + 1), clients.get(posB), clients.get(posB + 1))) {
+            List<Client> clientCopy = new ArrayList<>(clients.subList(posA + 1, posB + 1));
+            Collections.reverse(clientCopy);
+            List<Client> finalList = new ArrayList<>(clients.subList(0, posA + 1));
+            finalList.addAll(clientCopy);
+            finalList.addAll(clients.subList(posB + 1, clients.size()));
+            map.getVehicles().get(nbV).setClientsToDeliver(new LinkedList<Client>(finalList));
+        }
         return map;
     }
 

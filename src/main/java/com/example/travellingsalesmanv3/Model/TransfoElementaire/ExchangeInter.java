@@ -7,26 +7,7 @@ import com.example.travellingsalesmanv3.Model.Structure.Vehicle;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class Exchange extends VoisinAlgo {
-    @Override
-    public Map lancer(Map map, int posA, int posB, int nbV) {
-        return ExchangeVoisinIntra(map, posA, posB, nbV);
-    }
-
-    @Override
-    public ArrayList<Map> lancerToutVoisin(Map map) {
-        ArrayList<Map> list = ExchangeListVoisinIntra(map);
-        list.addAll(ExchangeListVoisinInter(map));
-        return list;
-    }
-
-    public Map ExchangeVoisinIntra(Map map, int posA, int posB, int nbV) {
-        LinkedList<Client> clients = map.getVehicles().get(nbV).getClientsToDeliver();
-        Client cliA = clients.get(posA);
-        clients.set(posA, clients.get(posB));
-        clients.set(posB, cliA);
-        return map;
-    }
+public class ExchangeInter extends VoisinAlgo {
 
     public Map ExchangeVoisinInter(Map map, int posA, int posB, int nbVA, int nbVB) {
         int capA = map.getVehicles().get(nbVA).getCapaciteRestant();
@@ -35,7 +16,7 @@ public class Exchange extends VoisinAlgo {
         LinkedList<Client> clients2 = map.getVehicles().get(nbVB).getClientsToDeliver();
 
         if (capA + clients.get(posA).getValue() < clients2.get(posB).getValue() || capB + clients2.get(posB).getValue() < clients.get(posA).getValue())
-            return null;
+            return map;
 
         map.getVehicles().get(nbVA).setCapaciteRestant(capA + clients.get(posA).getValue() - clients2.get(posB).getValue());
         map.getVehicles().get(nbVB).setCapaciteRestant(capB + clients2.get(posB).getValue() - clients.get(posA).getValue());
@@ -44,26 +25,8 @@ public class Exchange extends VoisinAlgo {
         return map;
     }
 
-    public ArrayList<Map> ExchangeListVoisinIntra(Map map) {
-        ArrayList<Map> maps = new ArrayList<>();
-        for (int k = 0; k <= map.getVehicles().size() - 1; k++) {
-            LinkedList<Client> clients = map.getVehicles().get(k).getClientsToDeliver();
-            for (int i = 1; i < clients.size() - 1; i++) {
-                for (int j = i + 1; j < clients.size() - 1; j++) {
-                    Map mapClone = map.cloneMap();
-                    Map m = ExchangeVoisinIntra(mapClone, i, j, k);
-                    maps.add(m);
-                }
-            }
-        }
-
-        return maps;
-    }
-
     public ArrayList<Map> ExchangeListVoisinInter(Map map) {
-
         ArrayList<Map> maps = new ArrayList<>();
-
         for (int k = 0; k <= map.getVehicles().size() - 1; k++) {
             Vehicle v = map.getVehicles().get(k);
             for (int i = 1; i < v.getClientsToDeliver().size() - 1; i++) {
@@ -82,4 +45,13 @@ public class Exchange extends VoisinAlgo {
         return maps;
     }
 
+    @Override
+    public Map lancer(Map map, int posA, int posB, int nbV, int nbv2) {
+        return ExchangeVoisinInter(map, posA, posB, nbV, nbv2);
+    }
+
+    @Override
+    public ArrayList<Map> lancerToutVoisin(Map map) {
+        return ExchangeListVoisinInter(map);
+    }
 }

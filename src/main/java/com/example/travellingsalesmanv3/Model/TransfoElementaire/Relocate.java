@@ -11,23 +11,20 @@ public class Relocate extends VoisinAlgo {
     public Relocate() {
     }
 
-    public Map relocateOnce(Map map, int clientToRelocate, int posToRelocate, int posVehicle) {
-        Vehicle vehicle = map.getVehicles().get(posVehicle);
-        LinkedList<Client> clients = vehicle.getClientsToDeliver();
-        Client c = clients.remove(clientToRelocate);
-        clients.add(posToRelocate, c);
-        return map;
-    }
 
-    public Map relocateOnceInter(Map map, int clientToRelocate, int posToRelocate, int posVehicle, int posVehicle2) {
+    public Map relocateOnce(Map map, int clientToRelocate, int posToRelocate, int posVehicle, int posVehicle2) {
         Vehicle vehicle = map.getVehicles().get(posVehicle);
         Vehicle vehicle2 = map.getVehicles().get(posVehicle2);
-        LinkedList<Client> clients = vehicle.getClientsToDeliver();
-        LinkedList<Client> clients2 = vehicle2.getClientsToDeliver();
-        Client c = clients.remove(clientToRelocate);
-        clients2.add(posToRelocate, c);
-        vehicle.setCapaciteRestant(vehicle.getCapaciteRestant() + c.getValue());
-        vehicle2.setCapaciteRestant(vehicle2.getCapaciteRestant() - c.getValue());
+        if (vehicle2.getCapaciteRestant() > vehicle.getClientsToDeliver().get(clientToRelocate).getValue()) {
+            LinkedList<Client> clients = vehicle.getClientsToDeliver();
+            LinkedList<Client> clients2 = vehicle2.getClientsToDeliver();
+            Client c = clients.remove(clientToRelocate);
+            clients2.add(posToRelocate, c);
+            vehicle.setCapaciteRestant(vehicle.getCapaciteRestant() + c.getValue());
+            vehicle2.setCapaciteRestant(vehicle2.getCapaciteRestant() - c.getValue());
+        }
+        if (vehicle.getCapaciteRestant() == 100)
+            map.getVehicles().remove(vehicle);
         return map;
     }
 
@@ -47,7 +44,7 @@ public class Relocate extends VoisinAlgo {
                         LinkedList<Client> clientsBuffer = clients;
                         vehicle.setClientsToDeliver(clientsBuffer);
                         if (vehicle2.getCapaciteRestant() > clients.get(index).getValue())
-                            neighbours.add(relocateOnceInter(map.cloneMap(), index, subIndex, indexVehicle, indexVehicle2));
+                            neighbours.add(relocateOnce(map.cloneMap(), index, subIndex, indexVehicle, indexVehicle2));
                     }
             }
 
@@ -56,8 +53,8 @@ public class Relocate extends VoisinAlgo {
     }
 
     @Override
-    public Map lancer(Map map, int posA, int posB, int nbV) {
-        return this.relocateOnce(map, posA, posB, nbV);
+    public Map lancer(Map map, int posA, int posB, int nbV, int nbv2) {
+        return this.relocateOnce(map, posA, posB, nbV, nbv2);
     }
 
     @Override
