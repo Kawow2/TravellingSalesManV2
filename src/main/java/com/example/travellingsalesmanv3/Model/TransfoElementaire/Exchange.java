@@ -15,8 +15,8 @@ public class Exchange extends VoisinAlgo {
 
     @Override
     public ArrayList<Map> lancerToutVoisin(Map map) {
-        ArrayList<Map> list = ExchangeListVoisinInter(map);
-        list.addAll(ExchangeListVoisinIntra(map));
+        ArrayList<Map> list = ExchangeListVoisinIntra(map);
+        list.addAll(ExchangeListVoisinInter(map));
         return list;
     }
 
@@ -34,11 +34,12 @@ public class Exchange extends VoisinAlgo {
         LinkedList<Client> clients = map.getVehicles().get(nbVA).getClientsToDeliver();
         LinkedList<Client> clients2 = map.getVehicles().get(nbVB).getClientsToDeliver();
 
-        if (capA < clients2.get(posB).getValue()-capB && capB < clients.get(posA).getValue()-capA)
+        if (capA + clients.get(posA).getValue() < clients2.get(posB).getValue() || capB + clients2.get(posB).getValue() < clients.get(posA).getValue())
             return null;
 
-        Client cliA = clients.get(posA);
-        clients.set(posA, clients2.get(posB));
+        map.getVehicles().get(nbVA).setCapaciteRestant(capA + clients.get(posA).getValue() - clients2.get(posB).getValue());
+        map.getVehicles().get(nbVB).setCapaciteRestant(capB + clients2.get(posB).getValue() - clients.get(posA).getValue());
+        Client cliA = clients.set(posA, clients2.get(posB));
         clients2.set(posB, cliA);
         return map;
     }

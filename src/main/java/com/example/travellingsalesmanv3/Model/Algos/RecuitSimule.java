@@ -28,7 +28,7 @@ public class RecuitSimule extends Algorithme {
     }
 
     private Map recuitSimule(Map map) {
-        int nbTemp = (int)(Math.log(Math.log(0.8) / Math.log(0.01))/Math.log(mu) )* 3;
+        int nbTemp = (int) (Math.log(Math.log(0.8) / Math.log(0.01)) / Math.log(mu)) * 3;
         double temperature = 0;
 
         long startTime = System.nanoTime();
@@ -46,11 +46,15 @@ public class RecuitSimule extends Algorithme {
             for (int k = 0; k < nbTemp; k++) {
                 for (int l = 1; l < N2; l++) {
                     cloneMap = map.cloneMap();
+                    int algoV = rnd.nextInt(this.voisins.size());
+                    VoisinAlgo v = this.voisins.get(algoV);
+
                     ArrayList<Map> voisin = new ArrayList<>();
-                    for (VoisinAlgo voisinAlgo : this.voisins)
-                        voisin.addAll(voisinAlgo.lancerToutVoisin(map));
+                    voisin.addAll(v.lancerToutVoisin(map));
 
                     //choix du voisin random
+                    if (voisin.size() <= 1)
+                        System.out.println(v.getClass().toString());
                     Map randomVoisin = voisin.get(rnd.nextInt(voisin.size() - 1));
                     double fitnessVoisin = Tools.calculerDistanceTotal(randomVoisin);
 
@@ -66,7 +70,9 @@ public class RecuitSimule extends Algorithme {
                     if (diffFitness <= 0 || proba <= Math.exp(-diffFitness / temperature)) {
                         nextVoisin = randomVoisin;
                         fitnessBestSolution = fitnessVoisin;
-                    } else { nextVoisin = cloneMap; }
+                    } else {
+                        nextVoisin = cloneMap;
+                    }
                     map = nextVoisin;
                     myWriter.write(Double.toString(Tools.calculerDistanceTotal(map)) + "\n");
                 }
@@ -79,7 +85,10 @@ public class RecuitSimule extends Algorithme {
 
             myWriter.write(Long.toString(durationInMs) + "\n");
             myWriter.close();
-        }catch (IOException e){}
+        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return map;
     }
 }

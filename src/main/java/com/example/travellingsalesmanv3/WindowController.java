@@ -41,6 +41,10 @@ public class WindowController {
     @FXML
     private RadioButton RelocateRadioButton;
     @FXML
+    private RadioButton ExchangeRadioButtonIntra;
+    @FXML
+    private RadioButton RelocateRadioButtonIntra;
+    @FXML
     private Canvas canva;
     @FXML
     private Label fitnessLabel;
@@ -132,6 +136,7 @@ public class WindowController {
             e.printStackTrace();
         }
         currentMap = algorithme.lancer(currentMap);
+        
         this.nbVehicleLabel.setText(String.valueOf(currentMap.getVehicles().size()));
         this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size() - 1));
         drawCurrentMapInCanva();

@@ -1,6 +1,5 @@
 package com.example.travellingsalesmanv3.Model.Algos;
 
-import com.example.travellingsalesmanv3.Model.Fenetre.Fenetre;
 import com.example.travellingsalesmanv3.Model.Structure.Map;
 import com.example.travellingsalesmanv3.Model.Tools.Tools;
 import com.example.travellingsalesmanv3.Model.TransfoElementaire.VoisinAlgo;
@@ -15,6 +14,7 @@ import java.util.stream.Collectors;
 public class Tabu extends Algorithme {
 
     private static boolean TABUCONDITION = true;
+    private static int tailleTabou = 10;
 
     public Tabu(ArrayList<VoisinAlgo> listVoisins) {
         super(listVoisins);
@@ -26,7 +26,6 @@ public class Tabu extends Algorithme {
         return map;
     }
 
-    //todo opti ?
     private Map rechercheTabu(Map map) {
         long startTime = System.nanoTime();
         TABUCONDITION = true;
@@ -35,7 +34,6 @@ public class Tabu extends Algorithme {
         Map bestCandidat;
         ArrayList<Map> tabuclients = new ArrayList<>();
         tabuclients.add(map);
-
         while (TABUCONDITION) {
             ArrayList<Map> voisin = new ArrayList<>();
             for (VoisinAlgo voisinAlgo : this.voisins)
@@ -53,14 +51,11 @@ public class Tabu extends Algorithme {
 
             if (Tools.calculerDistanceTotal(bestCandidat) < Tools.calculerDistanceTotal(bestSolution))
                 bestSolution = bestCandidat;
-//              this.fenetre.afficherMap(bestSolution);
-
+            if (tabuclients.size() == tailleTabou)
+                tabuclients.remove(tabuclients.get(0));
             tabuclients.add(bestCandidat);
-//            long locElapsedTime = System.nanoTime() - startTime;
-//            long locDurationInMs = TimeUnit.MILLISECONDS.convert(locElapsedTime, TimeUnit.NANOSECONDS);
-//            System.out.println("Exec time: " + locDurationInMs + "ms");
+
         }
-//        this.fenetre.afficherMap(bestSolution);
         long elapsedTime = System.nanoTime() - startTime;
         long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
         System.out.println("Total exec. time: " + durationInMs + "ms");
@@ -72,7 +67,8 @@ public class Tabu extends Algorithme {
             }
             myWriter.write(Long.toString(durationInMs) + "\n");
             myWriter.close();
-        }catch (IOException e){}
+        } catch (IOException e) {
+        }
 
         return bestSolution;
     }
