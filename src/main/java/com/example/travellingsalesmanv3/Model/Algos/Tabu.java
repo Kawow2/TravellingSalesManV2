@@ -21,15 +21,21 @@ public class Tabu extends Algorithme {
     }
 
     @Override
-    public Map lancer(Map map) {
-        map = this.rechercheTabu(map);
+    public Map lancer(Map map,String fileName) {
+        map = this.rechercheTabu(map,fileName);
         return map;
     }
 
-    private Map rechercheTabu(Map map) {
-        long startTime = System.nanoTime();
-        TABUCONDITION = true;
+    @Override
+    public String toString()
+    {
+        return "TABU";
+    }
 
+    private Map rechercheTabu(Map map,String fileName) {
+        TABUCONDITION = true;
+        var listToWrite = new ArrayList<Double>();
+        int nbSolution = 0;
         Map bestSolution = map.cloneMap();
         Map bestCandidat;
         ArrayList<Map> tabuclients = new ArrayList<>();
@@ -38,6 +44,8 @@ public class Tabu extends Algorithme {
             ArrayList<Map> voisin = new ArrayList<>();
             for (VoisinAlgo voisinAlgo : this.voisins)
                 voisin.addAll(voisinAlgo.lancerToutVoisin(bestSolution));
+
+            nbSolution += voisin.size();
 
             bestCandidat = voisin.stream().filter(v -> !tabuclients.contains(v)).collect(Collectors.toList()).stream().findAny().orElse(null);
 
@@ -56,19 +64,19 @@ public class Tabu extends Algorithme {
             tabuclients.add(bestCandidat);
 
         }
-        long elapsedTime = System.nanoTime() - startTime;
-        long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
-        System.out.println("Total exec. time: " + durationInMs + "ms");
 
-        try {
-            FileWriter myWriter = new FileWriter("src/main/java/com/example/travellingsalesmanv3/Model/Results/TABU_" + UUID.randomUUID() + ".txt");
-            for (Map curMap : tabuclients) {
-                myWriter.write(Double.toString(Tools.calculerDistanceTotal(curMap)) + "\n");
-            }
-            myWriter.write(Long.toString(durationInMs) + "\n");
-            myWriter.close();
-        } catch (IOException e) {
+        String s = "";
+        for (Map m : tabuclients) {
+            Double d = Tools.calculerDistanceTotal(m);
+            if (listToWrite.contains(d))
+                listToWrite.add(Tools.calculerDistanceTotal(m));
         }
+
+        super.WriteToFile(fileName,listToWrite);
+        System.out.println("Nombre de solutiosn générées : "+nbSolution);
+
+
+
 
         return bestSolution;
     }

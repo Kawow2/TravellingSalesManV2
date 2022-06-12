@@ -18,13 +18,18 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.paint.Color;
 
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 
 public class WindowController {
     private static final int zoom = 5;
+
+
     List<Color> allColors;
     private String currentFile;
     private ListAlgo currentAlgo;
@@ -127,13 +132,23 @@ public class WindowController {
         currentMap = UpdateMap();
         clearDraw();
         var listVoisins = initListVoisins();
+        long startTime = System.nanoTime();
+
         Algorithme algorithme = null;
         try {
             algorithme = ListAlgo.getAlgorithme(this.currentAlgo, listVoisins);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        currentMap = algorithme.lancer(currentMap);
+        var fileName = currentFile.split("\\.")[0]+"_"+algorithme.toString();
+
+
+        currentMap = algorithme.lancer(currentMap,fileName);
+
+        long elapsedTime = System.nanoTime() - startTime;
+        long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);
+        System.out.println("Total exec. time: " + durationInMs + "ms");
+        //TODO save le temps d'exec dans le fichier txt
 
         this.nbVehicleLabel.setText(String.valueOf(currentMap.getVehicles().size()));
         this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size() - 1));

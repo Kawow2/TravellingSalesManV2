@@ -20,9 +20,12 @@
                              onAction="#selectOPT" text="2-OPT"/>
                 <RadioButton fx:id="RelocateRadioButton" layoutX="39.0" layoutY="271.0" mnemonicParsing="false"
                              onAction="#selectRelocate" text="RELOCATE"/>
+                <RadioButton fx:id="RelocateRadioButtonIntra" layoutX="39.0" layoutY="271.0" mnemonicParsing="false"
+                             onAction="#selectRelocate" text="RELOCATE"/>
                 <RadioButton fx:id="ExchangeRadioButton" layoutX="39.0" layoutY="313.0" mnemonicParsing="false"
                              onAction="#selectExchange" text="EXCHANGE"/>
-                <RadioButton fx:id="ExchangeRadioButtonInter" layoutX="39.0" layoutY="353.0" mnemonicParsing="false"
+                <RadioButton fx:id="ExchangeRadioButtonIntra" layoutX="39.0" layoutY="313.0" mnemonicParsing="false"
+                             onAction="#selectExchange" text="EXCHANGE"/><RadioButton fx:id="ExchangeRadioButtonInter" layoutX="39.0" layoutY="353.0" mnemonicParsing="false"
                              onAction="#selectExchangeInter" text="ExchangeInter"/>
             </children>
         </Pane>
