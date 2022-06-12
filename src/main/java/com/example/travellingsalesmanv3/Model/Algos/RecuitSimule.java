@@ -18,6 +18,7 @@ public class RecuitSimule extends Algorithme {
     private static int N2 = 10_000;
     private static double mu = 0.9;
 
+
     public RecuitSimule(ArrayList<VoisinAlgo> listVoisins) {
         super(listVoisins);
     }
@@ -35,9 +36,9 @@ public class RecuitSimule extends Algorithme {
     }
 
     private Map recuitSimule(Map map,String fileName) {
+        int nbSolution = 0;
         int nbTemp = (int) (Math.log(Math.log(0.8) / Math.log(0.01)) / Math.log(mu)) * 3;
-        double temperature = 50;
-
+        double temperature = 300;
         var listToWrite = new ArrayList<Double>();
         Random rnd = new Random();
         Map cloneMap = map.cloneMap();
@@ -60,6 +61,7 @@ public class RecuitSimule extends Algorithme {
                     int posB = rnd.nextInt(1, map.getVehicles().get(nbV2).getClientsToDeliver().size() - 1);
                     Map randomVoisin = v.lancer(map, posA, posB, nbV, nbV2);
                     double fitnessVoisin = Tools.calculerDistanceTotal(randomVoisin);
+                    nbSolution++;
 
                     var diffFitness = fitnessVoisin - fitnessBestSolution;
                     // Check pk fichier A6009 diffFitness = fitnessVoisin - fitnessBestSolution = 0
@@ -71,20 +73,26 @@ public class RecuitSimule extends Algorithme {
                     double proba = rnd.nextDouble();
                     if (diffFitness <= 0 || proba <= Math.exp(-diffFitness / temperature)) {
                         nextVoisin = randomVoisin;
+                        if (fitnessBestSolution != fitnessVoisin)
+                        {
+                            listToWrite.add(fitnessBestSolution);
+                        }
                         fitnessBestSolution = fitnessVoisin;
+
+
+
+
                     } else {
                         nextVoisin = cloneMap;
                     }
                     map = nextVoisin;
-                    Double d = Tools.calculerDistanceTotal(map);
-                    if (!listToWrite.contains(d))
-                        listToWrite.add(d);
+
                 }
                 temperature = mu * temperature;
             }
 
            super.WriteToFile(fileName,listToWrite);
-
+            System.out.println("Nombre de solutions générées : "+nbSolution);
         } catch (Exception e) {
             e.printStackTrace();
         }

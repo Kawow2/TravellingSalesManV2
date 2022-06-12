@@ -30,18 +30,17 @@ public abstract class Algorithme {
 
     public void WriteToFile(String filename,ArrayList<Double> values)
     {
-        String s = "";
         FileWriter myWriter = null;
         try {
             myWriter = new FileWriter(FILEPATH + filename + ".txt");
             for (Double d : values) {
-                s+=d.toString() + "\n";
+                String s = "";
+                s = d.toString().replace(".", ",") + "\n";
+                myWriter.write(s);
 
             }
-            s = s.replace(".",",");
-            myWriter.write(s);
-
             myWriter.close();
+
         }
         catch (IOException e) {
                 e.printStackTrace();
