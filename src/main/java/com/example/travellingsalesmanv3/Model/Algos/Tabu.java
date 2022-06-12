@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Tabu extends Algorithme {
 
     private static boolean TABUCONDITION = true;
-    private static int tailleTabou = 10;
+    private static int tailleTabou = 100;
 
     public Tabu(ArrayList<VoisinAlgo> listVoisins) {
         super(listVoisins);
@@ -36,11 +36,13 @@ public class Tabu extends Algorithme {
         TABUCONDITION = true;
         var listToWrite = new ArrayList<Double>();
         int nbSolution = 0;
+        int count = 0;
         Map bestSolution = map.cloneMap();
         Map bestCandidat;
         ArrayList<Map> tabuclients = new ArrayList<>();
         tabuclients.add(map);
         while (TABUCONDITION) {
+            count++;
             ArrayList<Map> voisin = new ArrayList<>();
             for (VoisinAlgo voisinAlgo : this.voisins)
                 voisin.addAll(voisinAlgo.lancerToutVoisin(bestSolution));
@@ -57,20 +59,20 @@ public class Tabu extends Algorithme {
                 if (!tabuclients.contains(sCand) && Tools.calculerDistanceTotal(sCand) < Tools.calculerDistanceTotal(bestCandidat))
                     bestCandidat = sCand;
 
+            var d = Tools.calculerDistanceTotal(bestCandidat);
+            listToWrite.add(d);
+
             if (Tools.calculerDistanceTotal(bestCandidat) < Tools.calculerDistanceTotal(bestSolution))
+            {
                 bestSolution = bestCandidat;
-            if (tabuclients.size() == tailleTabou)
-                tabuclients.remove(tabuclients.get(0));
+            }
+
             tabuclients.add(bestCandidat);
+            if (count%1000==0)
+                System.out.println(count);
 
         }
 
-        String s = "";
-        for (Map m : tabuclients) {
-            Double d = Tools.calculerDistanceTotal(m);
-            if (listToWrite.contains(d))
-                listToWrite.add(Tools.calculerDistanceTotal(m));
-        }
 
         super.WriteToFile(fileName,listToWrite);
         System.out.println("Nombre de solutiosn générées : "+nbSolution);
