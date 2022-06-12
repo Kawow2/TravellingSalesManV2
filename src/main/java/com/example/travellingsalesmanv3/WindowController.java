@@ -6,10 +6,7 @@ import com.example.travellingsalesmanv3.Model.Structure.Client;
 import com.example.travellingsalesmanv3.Model.Structure.Map;
 import com.example.travellingsalesmanv3.Model.Structure.Vehicle;
 import com.example.travellingsalesmanv3.Model.Tools.Tools;
-import com.example.travellingsalesmanv3.Model.TransfoElementaire.Exchange;
-import com.example.travellingsalesmanv3.Model.TransfoElementaire.OPT;
-import com.example.travellingsalesmanv3.Model.TransfoElementaire.Relocate;
-import com.example.travellingsalesmanv3.Model.TransfoElementaire.VoisinAlgo;
+import com.example.travellingsalesmanv3.Model.TransfoElementaire.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -41,9 +38,7 @@ public class WindowController {
     @FXML
     private RadioButton RelocateRadioButton;
     @FXML
-    private RadioButton ExchangeRadioButtonIntra;
-    @FXML
-    private RadioButton RelocateRadioButtonIntra;
+    private RadioButton ExchangeRadioButtonInter;
     @FXML
     private Canvas canva;
     @FXML
@@ -99,6 +94,7 @@ public class WindowController {
         this.voisinsAlgo.add(false);
         this.voisinsAlgo.add(false);
         this.voisinsAlgo.add(false);
+        this.voisinsAlgo.add(false);
         allColors = this.getAllColors();
     }
 
@@ -110,7 +106,9 @@ public class WindowController {
         if (this.voisinsAlgo.get(1))
             listVoisins.add(new Relocate());
         if (this.voisinsAlgo.get(2))
-            listVoisins.add(new Exchange());
+            listVoisins.add(new ExchangeIntra());
+        if (this.voisinsAlgo.get(3))
+            listVoisins.add(new ExchangeInter());
         return listVoisins;
     }
 
@@ -136,7 +134,7 @@ public class WindowController {
             e.printStackTrace();
         }
         currentMap = algorithme.lancer(currentMap);
-        
+
         this.nbVehicleLabel.setText(String.valueOf(currentMap.getVehicles().size()));
         this.nbClientLabel.setText(String.valueOf(currentMap.getClients().size() - 1));
         drawCurrentMapInCanva();
@@ -229,4 +227,8 @@ public class WindowController {
         listAlgoComboBox.getItems().addAll(ListAlgo.values());
     }
 
+    public void selectExchangeInter(ActionEvent actionEvent) {
+        this.voisinsAlgo.set(3, !this.voisinsAlgo.get(3));
+
+    }
 }

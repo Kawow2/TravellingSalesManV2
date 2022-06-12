@@ -13,8 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RecuitSimule extends Algorithme {
     private static int N1 = 100;
-    private static int N2 = 10000;
-    private static double temperature = 300;
+    private static int N2 = 10_000;
     private static double mu = 0.9;
 
     public RecuitSimule(ArrayList<VoisinAlgo> listVoisins) {
@@ -29,15 +28,13 @@ public class RecuitSimule extends Algorithme {
 
     private Map recuitSimule(Map map) {
         int nbTemp = (int) (Math.log(Math.log(0.8) / Math.log(0.01)) / Math.log(mu)) * 3;
-        double temperature = 0;
+        double temperature = 50;
 
         long startTime = System.nanoTime();
 
         Random rnd = new Random();
         Map cloneMap = map.cloneMap();
 
-        Map bestSolution = cloneMap.cloneMap();
-        double minFitness = Integer.MAX_VALUE;
         double fitnessBestSolution = Tools.calculerDistanceTotal(cloneMap);
         Map nextVoisin = null;
 
@@ -49,20 +46,19 @@ public class RecuitSimule extends Algorithme {
                     int algoV = rnd.nextInt(this.voisins.size());
                     VoisinAlgo v = this.voisins.get(algoV);
 
-                    ArrayList<Map> voisin = new ArrayList<>();
-                    voisin.addAll(v.lancerToutVoisin(map));
 
                     //choix du voisin random
-                    if (voisin.size() <= 1)
-                        System.out.println(v.getClass().toString());
-                    Map randomVoisin = voisin.get(rnd.nextInt(voisin.size() - 1));
+                    int nbV = rnd.nextInt(map.getVehicles().size());
+                    int nbV2 = rnd.nextInt(map.getVehicles().size());
+                    int posA = rnd.nextInt(1, map.getVehicles().get(nbV).getClientsToDeliver().size() - 1);
+                    int posB = rnd.nextInt(1, map.getVehicles().get(nbV2).getClientsToDeliver().size() - 1);
+                    Map randomVoisin = v.lancer(map, posA, posB, nbV, nbV2);
                     double fitnessVoisin = Tools.calculerDistanceTotal(randomVoisin);
 
                     var diffFitness = fitnessVoisin - fitnessBestSolution;
                     // Check pk fichier A6009 diffFitness = fitnessVoisin - fitnessBestSolution = 0
                     if (k == 1 && l == 1) {
                         temperature = -(Math.abs(diffFitness)) / Math.log(0.8);
-                        System.out.println(temperature);
                     }
 
                     //si voisin est meilleur
@@ -77,7 +73,6 @@ public class RecuitSimule extends Algorithme {
                     myWriter.write(Double.toString(Tools.calculerDistanceTotal(map)) + "\n");
                 }
                 temperature = mu * temperature;
-                System.out.println(k);
             }
             long elapsedTime = System.nanoTime() - startTime;
             long durationInMs = TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS);

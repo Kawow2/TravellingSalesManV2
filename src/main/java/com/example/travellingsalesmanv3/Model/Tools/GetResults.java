@@ -22,7 +22,7 @@ public class GetResults {
         ArrayList<Integer> minRequiredVeh = new ArrayList<>();
         ArrayList<VoisinAlgo> AlgosTE = new ArrayList<>();
         try {
-            AlgosTE.add(getAlgorithmeVoisin(ListVoisins.EXCHANGE));
+            AlgosTE.add(getAlgorithmeVoisin(ListVoisins.EXCHANGEINTRA));
             AlgosTE.add(getAlgorithmeVoisin(ListVoisins.OPT));
             AlgosTE.add(getAlgorithmeVoisin(ListVoisins.RELOCATE));
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class GetResults {
         Tabu tabu = new Tabu(AlgosTE);
         RecuitSimule rec = new RecuitSimule(AlgosTE);
 
-        for (String file:filesnames) {
+        for (String file : filesnames) {
             Random rnd = new Random();
             Map currentMap = generateurSolutionAleatoire(Tools.ReadOneFile(file), rnd);
             Map tabuMap = currentMap.cloneMap();
