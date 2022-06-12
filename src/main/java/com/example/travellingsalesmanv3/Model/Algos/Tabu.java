@@ -35,7 +35,7 @@ public class Tabu extends Algorithme {
     private Map rechercheTabu(Map map,String fileName) {
         TABUCONDITION = true;
         var listToWrite = new ArrayList<Double>();
-
+        int nbSolution = 0;
         Map bestSolution = map.cloneMap();
         Map bestCandidat;
         ArrayList<Map> tabuclients = new ArrayList<>();
@@ -44,6 +44,8 @@ public class Tabu extends Algorithme {
             ArrayList<Map> voisin = new ArrayList<>();
             for (VoisinAlgo voisinAlgo : this.voisins)
                 voisin.addAll(voisinAlgo.lancerToutVoisin(bestSolution));
+
+            nbSolution += voisin.size();
 
             bestCandidat = voisin.stream().filter(v -> !tabuclients.contains(v)).collect(Collectors.toList()).stream().findAny().orElse(null);
 
@@ -71,7 +73,7 @@ public class Tabu extends Algorithme {
         }
 
         super.WriteToFile(fileName,listToWrite);
-
+        System.out.println("Nombre de solutiosn générées : "+nbSolution);
 
 
 
